@@ -1,0 +1,6 @@
+<root>
+        <book>
+                <booktitle>title</booktitle>
+                <field2 name="asdfasd">some vlaue2</field2>
+        </book>
+</root>

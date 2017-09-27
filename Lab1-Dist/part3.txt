@@ -1,0 +1,35 @@
+## calculate word frequency, top 50
+
+words = nltk.word_tokenize(text)
+words = [word for word in words if len(word) > 1]
+words = [word for word in words if not word.isnumeric()]
+words = [word.lower() for word in words]
+words = [word for word in words if word not in default_stopwords]
+fdist = nltk.FreqDist(words)
+freqs = list()
+for word, frequency in fdist.most_common(50):
+    freqs.append(u'<pair><word>{}</word><freq>{}</freq></pair>'.format(word, frequency))
+#print (freqs)
+freqs2 = "\n".join(freqs)
+
+I decided to find a rough word frequency top 50 list to indicate
+who or what was being referred to most and the most typical
+non-stop-word types of language.
+
+Several nltk docs and tutorials were used to understand the FreqDist
+api and typical nlp techniques.
+
+1.) the typical english stopwords were extracted from nltk
+default_stopwords = set(nltk.corpus.stopwords.words('english'))
+
+2.) The text was tokenized because the FreqDist function takes an
+iterable, so each token of the text will be fed into the function.
+
+3.) Then a series of list comprehensions that ensure the word is
+ greater than 1, is not numeric, converts to lowercase and isn't
+ a stopword.
+
+4.) The FreqDist function then counts the number of occurences of
+each token in the list and outputs the word and respective frequency
+
+5.) The data is converted into a XML format and joined together
