@@ -3,8 +3,9 @@ from nltk import ngrams, word_tokenize, RegexpTokenizer, FreqDist
 
 ## books liscensces removed
 
+raws = []
 f = open("SHolmes.txt","r")
-b_hol = f.read()
+raws = f.read()
 f = open("Frankenstein.txt","r")
 b_fra = f.read()
 f = open("Dracula.txt","r")
@@ -12,6 +13,8 @@ b_dra = f.read()
 
 tokenizer = RegexpTokenizer(r'[A-Za-z\']+').tokenize
 #tokenizer = word_tokenize()
+
+
 
 t_hol = tokenizer(b_hol)
 t_fra = tokenizer(b_fra)
