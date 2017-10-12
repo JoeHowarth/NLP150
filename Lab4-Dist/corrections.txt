@@ -1,0 +1,24 @@
+
+    0. Add enclosing top-level <reviews> tag
+
+	1. Find & replace unescaped ampersands not followed by a space:
+grep '&[a-zA-Z]' TrainingSet.xml | grep -ve '&quot' -ve '&amp' -ve '&lt' -ve '&gt'
+
+	2. Find & replace other unescaped ampersands:
+grep '& '
+grep '_&'
+
+    3. Add missing trailing semicolon to some '&quot' tokens
+
+	4. Replace SUB control characters at (row, column):
+(15993, 552), (17700, 1035), (23573, 45), (24605, [multiple]),
+(33032, [multiple]), (47989, 67), (54518-20, [multiple]), (55331, 139),
+(66360, 132 [found the "1/2" symbol in the original Amazon review!]),
+(66694, [multiple - metalinguistic, see below])
+
+Some SUB characters represented smart quotes, which I replaced with straight
+quotes. Others were foreign characters apparently not legal in our charset; I
+entered the English equivalent. In the "metalinguistic" case, the reviewer was
+complaining about the presence or absence of certain Spanish characters
+themselves. The easy fix meant changing the sense of his review in a small way.
+
