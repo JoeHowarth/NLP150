@@ -20,10 +20,14 @@ debug = 1
 def main():
     trainfile = ""
     testfile = ""
-    if len(sys.argv) > 1:
+    if len(sys.argv) == 2:
         trainfile = sys.argv[1]
-    elif len(sys.argv) > 2:
+        # print("hi",trainfile)
+
+    elif len(sys.argv) == 3:
+        trainfile = sys.argv[1]
         testfile = sys.argv[2]
+        # print("hi",trainfile, testfile)
     else:
         trainfile = "TrainingSet.xml"
         testfile = trainfile
@@ -43,9 +47,9 @@ def main():
     test_zip = list(zip (y_feat_list, Ytest))
     train_zip = list(zip (x_feat_list, Ytrain))
 
-    model, pred = run_model(train_zip, test_zip, y_feat_list, v=0.004)
-    # for ID,pred in list(zip(test_ID, pred)):
-    #     print("%s\t%s"% (ID.strip(), pred))
+    model, pred = run_model(train_zip, test_zip, y_feat_list, v=0.05, output=False)
+    for ID,pred in list(zip(test_ID, pred)):
+        print("%s\t%s"% (ID.strip(), pred))
 
 def get_xml(filename):
     tree = ET.parse(filename)
@@ -53,11 +57,14 @@ def get_xml(filename):
     root = [rev for rev in root]
     return root
 
-def run_model(train_zip, test_zip, y_feat_list, v=0.01):
+def run_model(train_zip, test_zip, y_feat_list, v=0.01, output=True):
     encoding = maxent.TypedMaxentFeatureEncoding.train(train_zip)
-
-    model = maxent.MaxentClassifier.train(train_zip, encoding=encoding, trace=4, min_lldelta=v)
-    print(nltk.classify.accuracy(model, test_zip))
+    if output:
+        trace = 3
+    else:
+        trace = 0
+    model = maxent.MaxentClassifier.train(train_zip, encoding=encoding, trace=trace, min_lldelta=v)
+    if output: print(nltk.classify.accuracy(model, test_zip))
     pred = model.classify_many(y_feat_list)
     return model, pred
 
