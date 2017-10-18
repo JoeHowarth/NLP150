@@ -1,5 +1,4 @@
 import xml.etree.ElementTree as ET
-from nltk import word_tokenize, RegexpTokenizer, FreqDist
 import nltk.classify
 from nltk.classify import maxent
 import random
