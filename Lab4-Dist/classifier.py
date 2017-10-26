@@ -10,11 +10,13 @@ stpwords = stopwords.words('english')
 import re
 import pickle
 import sys
-from nltk import ngrams
+from nltk import ngrams, RegexpTokenizer, FreqDist
 
 
 ## extra output for debugging
-debug = 1
+debug = 0
+real = True
+output = False
 
 def main():
     trainfile = ""
@@ -35,9 +37,9 @@ def main():
     test_xml = get_xml(testfile)[:]
 
     train, Ytrain, train_ID, test, Ytest, test_ID = revs_labels(train_xml, test_xml)
-    num_features = 500
-    num_bigrams = 80
-    num_trigrams = 7
+    num_features = 300
+    num_bigrams = 40
+    num_trigrams = 2
     all_words, all_bigrams, all_trigrams, feat_words, feat_bigrams, feat_trigrams = get_vocab(train, num_features, num_bigrams, num_trigrams)
     # all_words, all_bigrams, feat_words, feat_bigrams = get_vocab(train, num_features, num_bigrams)
 
@@ -46,7 +48,15 @@ def main():
     test_zip = list(zip (y_feat_list, Ytest))
     train_zip = list(zip (x_feat_list, Ytrain))
 
-    model, pred = run_model(train_zip, test_zip, y_feat_list, v=0.05, output=False)
+    # quick test
+    v = 0.05
+
+    # normal
+    # v = 0.01
+
+    # long
+    # v = 0.005
+    model, pred = run_model(train_zip, test_zip, y_feat_list, v, output=output)
     for ID,pred in list(zip(test_ID, pred)):
         print("%s\t%s"% (ID.strip(), pred))
 
@@ -81,7 +91,9 @@ def revs_labels(train_xml, test_xml):
             Ytrain[i] = 'neg'
         else:
             Ytrain[i] = 'pos'
-        train_ID[i] = train_xml[i].find("unique_id").text
+        # train_ID[i] = train_xml[i].find("unique_id").text
+        train_ID[i] = train_xml[i].find("asin").text
+
 
 
     # train[0].find("review_text").text
@@ -90,13 +102,16 @@ def revs_labels(train_xml, test_xml):
     test_ID  = [0] * len(test_xml)
     for i in range(len(test_xml)):
         test[i] = test_xml[i].find("review_text").text.lower()
-        Ytest[i] = str(int(float(test_xml[i].find("rating").text)))
-        y = float(test_xml[i].find("rating").text)
-        if (y < 3):
-            Ytest[i] = 'neg'
-        else:
-            Ytest[i] = 'pos'
-        test_ID[i] = test_xml[i].find("unique_id").text
+        if not real:
+            Ytest[i] = str(int(float(test_xml[i].find("rating").text)))
+            y = float(test_xml[i].find("rating").text)
+            if (y < 3):
+                Ytest[i] = 'neg'
+            else:
+                Ytest[i] = 'pos'
+        # test_ID[i] = test_xml[i].find("unique_id").text
+        test_ID[i] = test_xml[i].find("asin").text
+
     return train, Ytrain, train_ID, test, Ytest, test_ID
 
 
